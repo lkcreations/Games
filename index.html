@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbital Flow</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+<script>
+    const config = {
+        type: Phaser.AUTO,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        backgroundColor: '#222',
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 0 },
+                debug: false
+            }
+        },
+        scene: {
+            preload,
+            create,
+            update
+        }
+    };
+
+    const game = new Phaser.Game(config);
+    let player, cursors, score = 0, scoreText;
+
+    function preload() {
+        this.load.image('player', 'https://via.placeholder.com/50x50.png?text=O'); // Replace with a better asset
+        this.load.image('star', 'https://via.placeholder.com/30x30.png?text=+');
+    }
+
+    function create() {
+        player = this.physics.add.sprite(400, 300, 'player').setCollideWorldBounds(true);
+        cursors = this.input.keyboard.createCursorKeys();
+
+        // Add stars (example of collectables)
+        for (let i = 0; i < 10; i++) {
+            let star = this.physics.add.sprite(
+                Phaser.Math.Between(50, 750),
+                Phaser.Math.Between(50, 550),
+                'star'
+            );
+            this.physics.add.overlap(player, star, collectStar, null, this);
+        }
+
+        // Score display
+        scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '32px', fill: '#fff' });
+    }
+
+    function update() {
+        player.setVelocity(0);
+
+        if (cursors.left.isDown) player.setVelocityX(-200);
+        if (cursors.right.isDown) player.setVelocityX(200);
+        if (cursors.up.isDown) player.setVelocityY(-200);
+        if (cursors.down.isDown) player.setVelocityY(200);
+    }
+
+    function collectStar(player, star) {
+        star.destroy();
+        score += 10;
+        scoreText.setText('Score: ' + score);
+    }
+</script>
+</body>
+</html>
