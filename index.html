@@ -74,12 +74,21 @@
 
         // Enable touch controls for mobile
         this.input.on('pointerdown', function (pointer) {
-            // Handle touch or mouse click here
+            // Move player to touch point on the screen
+            player.setPosition(pointer.x, pointer.y);
             console.log('Tapped at: ', pointer.x, pointer.y);
+        });
+
+        // Optional: Detect touch move to create drag effect
+        this.input.on('pointermove', function (pointer) {
+            if (pointer.isDown) {
+                player.setPosition(pointer.x, pointer.y);
+            }
         });
     }
 
     function update() {
+        // Keyboard controls for desktop
         player.setVelocity(0);
 
         if (cursors.left.isDown) player.setVelocityX(-200);
