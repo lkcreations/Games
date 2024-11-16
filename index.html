@@ -8,9 +8,19 @@
         body {
             margin: 0;
             overflow: hidden;
+            background-color: #222;
         }
         canvas {
             display: block;
+            width: 100%;
+            height: auto;
+        }
+        iframe {
+            display: block;
+            width: 100%;
+            height: 100vh;
+            border: none;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -19,8 +29,8 @@
 <script>
     const config = {
         type: Phaser.AUTO,
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window.innerWidth,  // Dynamically adjust to screen width
+        height: window.innerHeight,  // Dynamically adjust to screen height
         backgroundColor: '#222',
         physics: {
             default: 'arcade',
@@ -37,6 +47,7 @@
     };
 
     const game = new Phaser.Game(config);
+
     let player, cursors, score = 0, scoreText;
 
     function preload() {
@@ -60,6 +71,12 @@
 
         // Score display
         scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '32px', fill: '#fff' });
+
+        // Enable touch controls for mobile
+        this.input.on('pointerdown', function (pointer) {
+            // Handle touch or mouse click here
+            console.log('Tapped at: ', pointer.x, pointer.y);
+        });
     }
 
     function update() {
@@ -76,6 +93,11 @@
         score += 10;
         scoreText.setText('Score: ' + score);
     }
+
+    // Make game resizeable based on the screen size
+    window.addEventListener('resize', function() {
+        game.scale.resize(window.innerWidth, window.innerHeight);
+    });
 </script>
 </body>
 </html>
